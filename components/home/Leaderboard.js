@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Paper,
@@ -9,15 +9,17 @@ import {
 	TableHead,
 	TableRow,
 	Grid,
-	Card
+	Card,
+	CircularProgress
 } from '@material-ui/core';
 import firebase from 'firebase/app';
+import { Spinner } from '@chakra-ui/core';
 
 const firestore = firebase.firestore();
 
 const useStyles = makeStyles(theme => ({
 	table: {
-		minWidth: 650,
+		minWidth: 300,
 	},
 	title: {
 		padding: '30px 0px 10px 30px',
@@ -34,16 +36,6 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center',
 		marginBottom: 30
 	},
-	tableTitle: {
-		textAlign: "center",
-		fontSize: 30,
-		fontWeight: 700,
-		background: theme.palette.primary.main,
-		color: 'white'
-	},
-	tablehead: {
-		fontWeight: 600
-	}
 }));
 
 function createData(name, miles, routes, completed) {
@@ -60,14 +52,33 @@ const rows = [
 
 const Leaderboard = () => {
 	const classes = useStyles();
+	const [mileLearderboard, setMileLeaderboard] = useState([]);
+	const [routeLearderboard, setRouteLeaderboard] = useState([]);
+
+	const [mileLeaderboardLoading, setMileLeaderboardLoading] = useState(true);
+	const [routeLeaderboardLoading, setRouteLeaderboardLoading] = useState(true);
 
 	useEffect(() => {
 		// calculate mileage of each user
-		firestore.collection('users').get().then(response => {
-			// const users = response.docs.map(doc => doc.data());
-			console.log(response.docs.map(doc => doc.data()));
+		firebase.firestore().collection('mile-leaderboard').get().then(res => {
+			const mileLearderboard = res.docs.map(doc => doc.data());
+			const sorted = mileLearderboard.sort((e1, e2) => e1.miles > e2.miles ? -1 : 1);
+			setMileLeaderboardLoading(false);
+			setMileLeaderboard(sorted);
+		});
+		firebase.firestore().collection('route-leaderboard').get().then(res => {
+			const routeLearderboard = res.docs.map(doc => doc.data());
+			const sorted = routeLearderboard.sort((e1, e2) => e1.routes > e2.routes ? -1 : 1);
+			setRouteLeaderboardLoading(false);
+			setRouteLeaderboard(sorted);
 		});
 	}, []);
+
+	const TableLoading = () => (
+		<div className="flex justify-center items-center p-6">
+			<Spinner m={16} />
+		</div>
+	);
 
 	return (
 		<div>
@@ -91,31 +102,69 @@ const Leaderboard = () => {
 					<div className={classes.value}>xs</div>
 				</Grid>
 			</Grid>
-			<Card className={classes.tableTitle}>LEADERBOARD</Card>
-			<TableContainer component={Paper}>
-				<Table className={classes.table} aria-label="simple table">
-					<TableHead>
-						<TableRow>
-							<TableCell className={classes.tablehead}>Name</TableCell>
-							<TableCell align="right" className={classes.tablehead}>Miles YTD</TableCell>
-							<TableCell align="right" className={classes.tablehead}>Routes</TableCell>
-							<TableCell align="right" className={classes.tablehead}>Completed</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{rows.map(row => (
-							<TableRow key={row.name}>
-								<TableCell>
-									{row.name}
-								</TableCell>
-								<TableCell align="right">{row.miles}</TableCell>
-								<TableCell align="right">{row.routes}</TableCell>
-								<TableCell align="right">{row.completed}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-5">LEADERBOARD</div>
+			<div className="flex justify-around items-center">
+				{!mileLeaderboardLoading ? (
+					<TableContainer component={Paper}>
+						<Table className={classes.table} aria-label="miles table">
+							<TableHead>
+								<TableRow>
+									<TableCell align="center">
+										<span className="font-semibold text-lg">Name</span>
+									</TableCell>
+									<TableCell align="center" className="font-semibold">
+										<span className="font-semibold text-lg">Miles</span>
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{mileLearderboard.map(row => (
+									<TableRow key={row.name}>
+										<TableCell align="center">
+											<span className="">{row.name}</span>
+										</TableCell>
+										<TableCell align="center">
+											<span className="">{row.miles}</span>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				) : (
+					<TableLoading />
+				)}
+				{!routeLeaderboardLoading ? (
+					<TableContainer component={Paper}>
+						<Table className={classes.table} aria-label="routes table">
+							<TableHead>
+								<TableRow>
+									<TableCell align="center">
+										<span className="font-semibold text-lg">Miles</span>
+									</TableCell>
+									<TableCell align="center">
+										<span className="font-semibold text-lg">Miles</span>
+									</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{routeLearderboard.map(row => (
+									<TableRow key={row.name}>
+										<TableCell align="center">
+											<span className="">{row.name}</span>
+										</TableCell>
+										<TableCell align="center">
+											<span className="">{row.routes}</span>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+				) : (
+					<TableLoading />
+				)}
+			</div>
 		</div>
 	);
 }
