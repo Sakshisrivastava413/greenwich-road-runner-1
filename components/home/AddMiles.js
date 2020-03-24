@@ -44,6 +44,14 @@ const AddMiles = () => {
 		const totalMin = getTotalMin(time);
 		const route = selectedRoute.value;
 		setLoading(true);
+		const found = predefinedRoutes.some(route => route.value === selectedRoute.value);
+		if (!found) {
+			firestore.collection('app_settings').doc('routes').get().then(res => {
+				const data = res.data();
+				data.defined.push({ name: selectedRoute.value });
+				firestore.collection('app_settings').doc('routes').set({ defined: data.defined });
+			});
+		}
 		firestore.collection(`users`).doc(user.uid).collection('mileEntry').add({
 			pace,
 			route,
@@ -51,16 +59,16 @@ const AddMiles = () => {
 			totalMin,
 		}).then(async () => {
 			await firestore.collection('mile-leaderboard').doc(user.uid).set({
-				miles: (user.totalMiles || 0) + mileage,
+				miles: Number(user.totalMiles || 0) + Number(mileage),
 				name: user.firstName + user.lastName,
 			});
 			await firestore.collection('route-leaderboard').doc(user.uid).set({
-				routes: (user.totalRoutes || 0) + 1,
+				routes: Number(user.totalRoutes || 0) + 1,
 				name: user.firstName + user.lastName,
 			});
 			await firestore.collection('users').doc(user.uid).update({
-				totalMiles: (user.totalMiles || 0) + mileage,
-				totalRoutes: (user.totalRoutes || 0) + 1,
+				totalMiles: Number(user.totalMiles || 0) + Number(mileage),
+				totalRoutes: Number(user.totalRoutes || 0) + 1,
 			});
 			toast({
 				title: 'Success',
@@ -74,7 +82,6 @@ const AddMiles = () => {
 			setTime('00:00:00');
 			setSelectedRoute(null);
 		}).catch((error) => {
-			console.log(error);
 			toast({
 				title: 'Error',
 				description: 'Something went wrong!',
@@ -126,6 +133,7 @@ const AddMiles = () => {
 						<TextField
 							variant="outlined"
 							size="small"
+							type="number"
 							className={`w-full ${selectedRoute && selectedRoute.mileage && 'bg-gray-200'}`}
 							value={mileage}
 							disabled={!!(selectedRoute && selectedRoute.mileage)}
