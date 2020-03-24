@@ -69,9 +69,7 @@ const Home = () => {
 	const classes = useStyles();
 	const [current, setCurrent] = useState(0);
 
-	const handleTabChange = () => {
-		setCurrent(current ? 0 : 1);
-	};
+	const handleTabChange = (event, newValue) => setCurrent(newValue);
 
 	return (
 		<div className={classes.main}>
