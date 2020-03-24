@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Container, Fab, Typography, Grid, CircularProgress, TextField, Button } from '@material-ui/core';
 import Link from 'next/Link';
+import { useRouter } from 'next/router';
 import { AddAPhoto } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import firebase from 'firebase/app';
 
 const useStyles = makeStyles((theme) => ({
   upload: {
@@ -31,7 +33,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const firestore = firebase.firestore();
+
 const Signup = () => {
+  const router = useRouter();
   const classes = useStyles();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -48,8 +53,10 @@ const Signup = () => {
     }
     setLoading(true);
     try {
-      await firebase.register({ firstName, lastName, email, password, phone });
-      history.push('/home');
+      const user = { firstName, lastName, email, phone };
+      const res = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      await firestore.collection('users').doc(res.user.uid).set(user);
+      router.push('/home');
     } catch (error) {
       alert(error.message);
     }

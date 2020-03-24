@@ -20,11 +20,16 @@ export const UserContext = createContext();
 
 const Page = ({ title, ...props }) => {
 	const router = useRouter();
-	const [user, setUser] = useState(firebase.auth().currentUser);
+	const [user, setUser] = useState(null);
 
 	useEffect(() => {
-		const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-			if (user) setUser(user);
+		const unsubscribe = firebase.auth().onAuthStateChanged(async authUserRes => {
+			if (authUserRes) {
+				const { uid } = authUserRes;
+				const userRes = await firebase.firestore().collection('users').doc(uid).get();
+				const user = userRes.data();
+				if (user) setUser(user);
+			}
 		});
 		return () => {
 			unsubscribe();
@@ -32,11 +37,11 @@ const Page = ({ title, ...props }) => {
 	}, []);
 
 	useEffect(() => {
-		if (!(user && user.uid)) {
-			router.push('/login');
-		} else {
-			router.push('/home');
-		}
+		// if (!(user && user.uid) && router.pathname.search(/login|signup/) !== -1) {
+		// 	router.push('/login');
+		// } else {
+		// 	router.push('/home');
+		// }
 	}, [user]);
 
 	return (

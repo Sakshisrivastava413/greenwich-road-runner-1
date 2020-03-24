@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Paper,
@@ -11,6 +11,9 @@ import {
 	Grid,
 	Card
 } from '@material-ui/core';
+import firebase from 'firebase/app';
+
+const firestore = firebase.firestore();
 
 const useStyles = makeStyles(theme => ({
 	table: {
@@ -57,6 +60,14 @@ const rows = [
 
 const Leaderboard = () => {
 	const classes = useStyles();
+
+	useEffect(() => {
+		// calculate mileage of each user
+		firestore.collection('users').get().then(response => {
+			// const users = response.docs.map(doc => doc.data());
+			console.log(response.docs.map(doc => doc.data()));
+		});
+	}, []);
 
 	return (
 		<div>
