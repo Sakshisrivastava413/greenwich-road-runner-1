@@ -28,9 +28,10 @@ const Page = ({ title, ...props }) => {
 				const { uid } = authUserRes;
 				const userRes = await firebase.firestore().collection('users').doc(uid).get();
 				const user = userRes.data();
-				if (user) setUser(user);
+				if (user) setUser({ ...user, uid });
 			}
 		});
+
 		return () => {
 			unsubscribe();
 		};
@@ -42,6 +43,15 @@ const Page = ({ title, ...props }) => {
 		// } else {
 		// 	router.push('/home');
 		// }
+		let unsubscribeUserData;
+		if (user && user.uid) {
+			unsubscribeUserData = firebase.firestore().collection('users').doc(user.uid).onSnapshot(snapshot => {
+				setUser({ ...snapshot.data(), uid: user.uid });
+			});
+		}
+		return () => {
+			if (unsubscribeUserData) unsubscribeUserData();
+		};
 	}, [user]);
 
 	return (
