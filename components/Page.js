@@ -15,15 +15,20 @@ const DynamicHeader = dynamic(() => import('./Header').then(mod => mod.default),
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
-const UserContext = createContext();
+export const UserContext = createContext();
 
 const Page = ({ title, ...props }) => {
 	const router = useRouter();
 	const [user, setUser] = useState(firebase.auth().currentUser);
 
-	firebase.auth().onAuthStateChanged(user => {
-		setUser(user);
-	});
+	useEffect(() => {
+		const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+			if (user) setUser(user);
+		});
+		return () => {
+			unsubscribe();
+		};
+	}, []);
 
 	useEffect(() => {
 		if (!(user && user.uid)) {
