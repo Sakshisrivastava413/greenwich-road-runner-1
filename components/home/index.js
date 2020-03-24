@@ -72,8 +72,8 @@ const Home = () => {
 							<p className="text-2xl font-semibold my-4">{`${user.firstName} ${user.lastName}`}</p>
 						</div>
 						<div className="flex flex-col self-end p-6">
-							<p className="text-2xl">YTD Total: <span className={classes.value}>172 miles</span></p>
-							<p className="text-2xl">Routes Completed: <span className={classes.value}>15</span></p>
+							<p className="text-2xl">YTD Total: <span className={classes.value}>{user.totalMiles} miles</span></p>
+							<p className="text-2xl">Routes Completed: <span className={classes.value}>{user.totalRoutes}</span></p>
 						</div>
 					</div>
 
