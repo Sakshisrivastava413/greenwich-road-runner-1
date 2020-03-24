@@ -21,9 +21,7 @@ const Header = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar
-        position="fixed"
-      >
+      <AppBar position="relative">
         <Toolbar className={classes.flex}>
           <Typography variant="h6">Greenwich Road Runner</Typography>
           {router.pathname.search(/login|signup/) === -1 && (

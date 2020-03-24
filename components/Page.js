@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/router';
 import { createContext, useState, useEffect } from 'react';
+import { ThemeProvider } from '@chakra-ui/core';
 
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
@@ -43,10 +44,12 @@ const Page = ({ title, ...props }) => {
 			<Head>
 				<title>{title}</title>
 			</Head>
-			<UserContext.Provider value={{ user }}>
-				<DynamicHeader />
-				<props.children />
-			</UserContext.Provider>
+			<ThemeProvider>
+				<UserContext.Provider value={{ user }}>
+					<DynamicHeader />
+					<props.children />
+				</UserContext.Provider>
+			</ThemeProvider>
 		</div>
 	);
 };

@@ -1,22 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import CreatableSelect from 'react-select/creatable';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Paper, Button, TextField } from '@material-ui/core';
+import { Grid, Button, TextField } from '@material-ui/core';
+import { useToast, Spinner } from '@chakra-ui/core';
 import TimeField from 'react-simple-timefield';
+import firebase from 'firebase/app';
+import { UserContext } from '../Page';
 
-const routeOptions = [
-	{ value: 'blues', label: 'Your Miles' },
-	{ value: 'rock', label: 'Tack Miles' },
-	{ value: 'jazz', label: 'Mianus Your Miles' },
-	{ value: 'orchestra', label: 'Your Miles Rock State Park' },
-	{ value: 'orchestra', label: 'Your Miles NYC Central Park' },
-	{ value: 'orchestra', label: "Your Miles Tod's Point" },
-	{ value: 'orchestra', label: 'William K' },
-	{ value: 'orchestra', label: "Randy's Note" },
-	{ value: 'orchestra', label: "Ric's Warm Up" },
-	{ value: 'orchestra', label: "Lost & Found" },
-	{ value: 'orchestra', label: "Tod's Loop" },
-];
+const firestore = firebase.firestore();
 
 const useStyles = makeStyles({
 	container: {
@@ -32,63 +23,136 @@ const useStyles = makeStyles({
 	},
 });
 
-const AddMiles = () => {
-	const classes = useStyles();
-	const [time, setTime] = useState('00:00:00');
-	const [route, setRoute] = useState(routeOptions[0]);
-	const [mileage, setMileage] = useState('');
-	const [pace, setPace] = useState('');
+const getTotalMin = (time) => {
+	const [hours, mins, secs] = time.split(':').map(Number);
+	const totalMin = (hours * 60) + mins + (secs / 60);
+	return totalMin;
+}
 
-	const submit = () => {
-		console.log(time, route, mileage, pace);
+const AddMiles = () => {
+	const toast = useToast();
+	const classes = useStyles();
+	const { user } = useContext(UserContext);
+	const [selectedRoute, setSelectedRoute] = useState();
+	const [mileage, setMileage] = useState('');
+	const [time, setTime] = useState('00:00:00');
+	const [pace, setPace] = useState('');
+	const [predefinedRoutes, setPredefinedRoutes] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	const submit = async () => {
+		const totalMin = getTotalMin(time);
+		const route = selectedRoute.value;
+		setLoading(true);
+		firestore.collection(`users`).doc(user.uid).collection('mileEntry').add({
+			pace,
+			route,
+			mileage,
+			totalMin,
+		}).then(() => {
+			toast({
+				title: 'Success',
+				description: 'Mile Entry done.',
+				isClosable: true,
+				position: 'top-right',
+				status: 'success',
+			});
+			setPace('');
+			setMileage('');
+			setTime('00:00:00');
+			setSelectedRoute(null);
+		}).catch(() => {
+			toast({
+				title: 'Error',
+				description: 'Something went wrong!',
+				isClosable: true,
+				position: 'top-right',
+				status: 'error',
+			});
+		}).finally(() => setLoading(false));
 	};
 
-	const handleChange = (e) => {
-		setRoute(e);
-	}
+	useEffect(() => {
+		firestore.collection('app_settings').doc('routes').get().then(doc => {
+			const routes = doc.data().defined;
+			setPredefinedRoutes(routes.map(route => ({ label: route.name, value: route.name, ...route })));
+		});
+	}, []);
+
+	const handleRouteChange = (selectedRoute) => {
+		setSelectedRoute(selectedRoute);
+		setMileage('');
+	};
+
+	useEffect(() => {
+		if (selectedRoute && selectedRoute.mileage) setMileage(selectedRoute.mileage);
+	}, [selectedRoute]);
+
+	useEffect(() => {
+		const totalMin = getTotalMin(time);
+		if (mileage && totalMin > 0) {
+			setPace((totalMin / mileage).toFixed(2));
+		}
+	}, [mileage, time]);
 
 	return (
 		<React.Fragment>
 			<div className={classes.container}>
 				<Grid container spacing={3} wrap>
 					<Grid item xs={12} sm={6}>
-						<p className={classes.title}>Route</p>
+						<p className="text-lg font-semibold mb-2">Route</p>
 						<CreatableSelect
-							defaultValue={routeOptions[0]}
-							onChange={handleChange}
-							onInputChange={handleChange}
-							options={routeOptions}
+							onChange={handleRouteChange}
+							value={selectedRoute}
+							options={predefinedRoutes}
 							styles={{ menu: base => ({ ...base, position: 'relative' }) }}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6}>
-						<p className={classes.title}>Mileage</p>
-						<TextField variant="outlined" size="small" style={{ width: '100%' }} onChange={(e) => setMileage(e.target.value)} />
+						<p className="text-lg font-semibold mb-2">Mileage</p>
+						<TextField
+							variant="outlined"
+							size="small"
+							className={`w-full ${selectedRoute && selectedRoute.mileage && 'bg-gray-200'}`}
+							value={mileage}
+							disabled={!!(selectedRoute && selectedRoute.mileage)}
+							onChange={event => setMileage(event.target.value)}
+						/>
 					</Grid>
 				</Grid>
 				<Grid container spacing={3} wrap>
 					<Grid item xs={12} sm={6}>
-						<p className={classes.title}>Time</p>
+						<p className="text-lg font-semibold mb-2">Time</p>
 						<TimeField
-							value={time}                     // {String}   required, format '00:00' or '00:00:00'
-							onChange={(value) => setTime(value)}      // {Function} required
-							style={{
-								width: '100%'
-							}}
-							input={<TextField value={time} variant="outlined" size="small" />} // {Element}  default: <input type="text" />
-							colon=":"                        // {String}   default: ":"
-							showSeconds                      // {Boolean}  default: false
+							colon=":"
+							showSeconds
+							value={time}
+							className="w-full"
+							onChange={event => setTime(event.target.value)}
+							input={<TextField value={time} variant="outlined" size="small" />}
 						/>
 					</Grid>
 					<Grid item xs={12} sm={6}>
-						<p className={classes.title}>Pace</p>
-						<TextField variant="outlined" size="small" style={{ width: '100%' }} onChange={(e) => setPace(e.target.value)} />
+						<p className="text-lg font-semibold mb-2">Pace</p>
+						<TextField
+							variant="outlined"
+							size="small"
+							value={pace}
+							disabled={true}
+							className="w-full bg-gray-200"
+						/>
 					</Grid>
 				</Grid>
 			</div>
 			<div className={classes.button}>
-				<Button variant="contained" color="primary" onClick={submit}>
+				<Button
+					variant="contained"
+					color="primary"
+					onClick={submit}
+					disabled={!pace || !selectedRoute}
+				>
 					Submit Miles
+					{loading && <Spinner ml="4" color="white" />}
         </Button>
 			</div>
 		</React.Fragment>
