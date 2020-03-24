@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
+import Link from 'next/Link';
 import {
   Container,
   Typography,
   Grid,
   TextField,
   Button,
-  Link,
   CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -113,8 +113,8 @@ const Login = () => {
               </Link> */}
             </Grid>
             <Grid item>
-              <Link onClick={() => history.push('/signup')} variant="body2" style={{ cursor: 'pointer' }}>
-                {"Don't have an account? Sign Up"}
+              <Link href="/signup" as="/signup">
+                <a className="text-indigo-500 underline-none">Don't have an account? Sign Up</a>
               </Link>
             </Grid>
           </Grid>

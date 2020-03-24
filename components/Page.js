@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import firebase from 'firebase/app';
 import { useRouter } from 'next/router';
 import { createContext, useState, useEffect } from 'react';
@@ -6,13 +7,17 @@ import { createContext, useState, useEffect } from 'react';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
 import firebaseConfig from '../firebaseConfig';
-import Header from './Header';
+import '../index.css';
+
+const DynamicHeader = dynamic(() => import('./Header').then(mod => mod.default), {
+	ssr: false,
+});
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 const UserContext = createContext();
 
-const Page = ({ title, children }) => {
+const Page = ({ title, ...props }) => {
 	const router = useRouter();
 	const [user, setUser] = useState();
 
@@ -21,10 +26,10 @@ const Page = ({ title, children }) => {
 	});
 
 	useEffect(() => {
-		if (user && user.uid) {
-			router.push('/home');
-		} else {
-			router.push('/login');
+		if (router.pathname.search(/login|signup/) === -1) {
+			if (!user || !user.uid) {
+				router.push('/login');
+			}
 		}
 	}, [user]);
 
@@ -34,8 +39,8 @@ const Page = ({ title, children }) => {
 				<title>{title}</title>
 			</Head>
 			<UserContext.Provider value={{ user }}>
-				<Header />
-				<children />
+				<DynamicHeader />
+				<props.children />
 			</UserContext.Provider>
 		</div>
 	);

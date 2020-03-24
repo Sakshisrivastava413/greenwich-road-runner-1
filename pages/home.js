@@ -6,7 +6,7 @@ const Home = dynamic(() => import('../components/home').then(mod => mod.Home), {
 });
 
 export default () => (
-	<Page title="home">
-		<Home />
+	<Page title="GRR - home">
+		{() => <Home />}
 	</Page>
 );
