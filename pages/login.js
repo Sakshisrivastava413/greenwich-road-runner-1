@@ -6,7 +6,7 @@ const Login = dynamic(() => import('../components/login').then(mod => mod.Login)
 });
 
 export default () => (
-	<Page title="GRR - login">
+	<Page title="GRR - Login">
 		{() => <Login />}
 	</Page>
 );
