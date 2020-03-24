@@ -82,27 +82,30 @@ const Leaderboard = () => {
 
 	return (
 		<div>
-			<div className={classes.title}>Today's Run</div>
-			<Grid container spacing={3}>
-				<Grid xs>
-					<div className={classes.paper}>Route</div>
-					<div className={classes.value}>xs</div>
-
-				</Grid>
-				<Grid xs>
-					<div className={classes.paper}>Miles</div>
-					<div className={classes.value}>xs</div>
-				</Grid>
-				<Grid xs>
-					<div className={classes.paper}>Time</div>
-					<div className={classes.value}>xs</div>
-				</Grid>
-				<Grid xs>
-					<div className={classes.paper}>Pace</div>
-					<div className={classes.value}>xs</div>
-				</Grid>
-			</Grid>
-			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-5">LEADERBOARD</div>
+			{false && (
+				<div>
+					<div className={classes.title}>Today's Run</div>
+					<Grid container spacing={3}>
+						<Grid xs>
+							<div className={classes.paper}><b>Route</b></div>
+							<div className={classes.value}>xs</div>
+						</Grid>
+						<Grid xs>
+							<div className={classes.paper}><b>Miles</b></div>
+							<div className={classes.value}>xs</div>
+						</Grid>
+						<Grid xs>
+							<div className={classes.paper}><b>Time</b></div>
+							<div className={classes.value}>xs</div>
+						</Grid>
+						<Grid xs>
+							<div className={classes.paper}><b>Pace</b></div>
+							<div className={classes.value}>xs</div>
+						</Grid>
+					</Grid>
+				</div>
+			)}
+			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>
 			<div className="flex justify-around items-center">
 				{!mileLeaderboardLoading ? (
 					<TableContainer component={Paper}>
