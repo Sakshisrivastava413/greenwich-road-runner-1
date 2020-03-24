@@ -19,17 +19,17 @@ const UserContext = createContext();
 
 const Page = ({ title, ...props }) => {
 	const router = useRouter();
-	const [user, setUser] = useState();
+	const [user, setUser] = useState(firebase.auth().currentUser);
 
 	firebase.auth().onAuthStateChanged(user => {
 		setUser(user);
 	});
 
 	useEffect(() => {
-		if (router.pathname.search(/login|signup/) === -1) {
-			if (!user || !user.uid) {
-				router.push('/login');
-			}
+		if (!(user && user.uid)) {
+			router.push('/login');
+		} else {
+			router.push('/home');
 		}
 	}, [user]);
 

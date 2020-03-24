@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router'
 import Link from 'next/Link';
+import firebase from 'firebase/app';
 import {
   Container,
   Typography,
@@ -47,20 +48,20 @@ const Login = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-    if (email === '' && password === '') {
+    if (email === '' || password === '') {
       alert('Email or password cannot be empty!')
       return;
 		}
 
     try {
       setLoading(true);
-      await firebase.login(email, password);
+      await firebase.auth().signInWithEmailAndPassword(email, password);
       router.push('/home');
     } catch (error) {
       alert(error.message);
     }
     setLoading(false);
-  }
+  };
 
   return (
     <Container component="main" maxWidth="xs">

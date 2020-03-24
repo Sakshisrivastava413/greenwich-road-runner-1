@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
+import firebase from 'firebase/app';
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -14,9 +15,8 @@ const Header = () => {
 	const router = useRouter();
 
   const logout = () => {
-    firebase.logout();
-    history.replace('/login');
-    localStorage.removeItem('user')
+    firebase.auth().signOut();
+    localStorage.removeItem('user');
   };
 
   return (
