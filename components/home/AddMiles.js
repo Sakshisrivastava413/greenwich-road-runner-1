@@ -49,7 +49,19 @@ const AddMiles = () => {
 			route,
 			mileage,
 			totalMin,
-		}).then(() => {
+		}).then(async () => {
+			await firestore.collection('mile-leaderboard').doc(user.uid).set({
+				miles: (user.totalMiles || 0) + mileage,
+				name: user.firstName + user.lastName,
+			});
+			await firestore.collection('route-leaderboard').doc(user.uid).set({
+				routes: (user.totalRoutes || 0) + 1,
+				name: user.firstName + user.lastName,
+			});
+			await firestore.collection('users').doc(user.uid).update({
+				totalMiles: (user.totalMiles || 0) + mileage,
+				totalRoutes: (user.totalRoutes || 0) + 1,
+			});
 			toast({
 				title: 'Success',
 				description: 'Mile Entry done.',
@@ -61,7 +73,8 @@ const AddMiles = () => {
 			setMileage('');
 			setTime('00:00:00');
 			setSelectedRoute(null);
-		}).catch(() => {
+		}).catch((error) => {
+			console.log(error);
 			toast({
 				title: 'Error',
 				description: 'Something went wrong!',
