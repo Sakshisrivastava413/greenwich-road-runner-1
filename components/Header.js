@@ -16,6 +16,7 @@ const Header = () => {
 
   const logout = () => {
     firebase.auth().signOut();
+    router.push('/login');
     localStorage.removeItem('user');
   };
 

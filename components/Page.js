@@ -20,39 +20,47 @@ export const UserContext = createContext();
 
 const Page = ({ title, ...props }) => {
 	const router = useRouter();
+	const [isLoggedIn, setLoggedIn] = useState(firebase.auth().currentUser && firebase.auth().currentUser.uid);
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
+		let unsubscribeUserData;
 		const unsubscribe = firebase.auth().onAuthStateChanged(async authUserRes => {
+			if (authUserRes) setLoggedIn(authUserRes.uid);
 			if (authUserRes) {
 				const { uid } = authUserRes;
-				const userRes = await firebase.firestore().collection('users').doc(uid).get();
-				const user = userRes.data();
-				if (user) setUser({ ...user, uid });
+				if (uid) {
+					const userRes = await firebase.firestore().collection('users').doc(uid).get();
+					const user = userRes.data();
+					if (user) {
+						unsubscribeUserData = firebase.firestore().collection('users').doc(uid).onSnapshot(snapshot => {
+							const userObj = snapshot.data();
+							if (userObj) {
+								setUser({ ...userObj, uid });
+							}
+						});
+					}
+				}
 			}
 		});
 
 		return () => {
+			if (unsubscribeUserData) unsubscribeUserData();
 			unsubscribe();
 		};
 	}, []);
 
 	useEffect(() => {
-		// if (!(user && user.uid) && router.pathname.search(/login|signup/) !== -1) {
-		// 	router.push('/login');
-		// } else {
-		// 	router.push('/home');
-		// }
-		let unsubscribeUserData;
 		if (user && user.uid) {
-			unsubscribeUserData = firebase.firestore().collection('users').doc(user.uid).onSnapshot(snapshot => {
-				setUser({ ...snapshot.data(), uid: user.uid });
-			});
+			if (router.pathname === '/login' || router.pathname === '/signup') {
+				router.push('/home');
+			}
 		}
-		return () => {
-			if (unsubscribeUserData) unsubscribeUserData();
-		};
-	}, [user]);
+
+		if (!isLoggedIn && router.pathname === '/home') {
+			router.push('/login');
+		}
+	}, [isLoggedIn, user]);
 
 	return (
 		<div>
