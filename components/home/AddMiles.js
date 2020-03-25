@@ -60,11 +60,11 @@ const AddMiles = () => {
 		}).then(async () => {
 			await firestore.collection('mile-leaderboard').doc(user.uid).set({
 				miles: Number(user.totalMiles || 0) + Number(mileage),
-				name: user.firstName + user.lastName,
+				name: `${user.firstName} ${user.lastName}`,
 			});
 			await firestore.collection('route-leaderboard').doc(user.uid).set({
 				routes: Number(user.totalRoutes || 0) + 1,
-				name: user.firstName + user.lastName,
+				name: `${user.firstName} ${user.lastName}`,
 			});
 			await firestore.collection('users').doc(user.uid).update({
 				totalMiles: Number(user.totalMiles || 0) + Number(mileage),

@@ -20,11 +20,8 @@ const TabPanel = (props) => {
 };
 
 const useStyles = makeStyles(theme => ({
-	main: {
-		margin: 20
-	},
 	root: {
-		marginTop: '6rem',
+		marginTop: '1rem',
 		minWidth: 275,
 		height: '100%',
 	},
@@ -63,7 +60,7 @@ const Home = () => {
 	);
 
 	return (
-		<div className={classes.main}>
+		<div className="">
 			<Card className={classes.root}>
 				<CardContent>
 					<div className="flex justify-between">
@@ -72,8 +69,8 @@ const Home = () => {
 							<p className="text-2xl font-semibold my-4">{`${user.firstName} ${user.lastName}`}</p>
 						</div>
 						<div className="flex flex-col self-end p-6">
-							<p className="text-2xl">YTD Total: <span className={classes.value}>{user.totalMiles} miles</span></p>
-							<p className="text-2xl">Routes Completed: <span className={classes.value}>{user.totalRoutes}</span></p>
+							<p className="text-2xl">YTD Total: <span className={classes.value}>{user.totalMiles || 0} miles</span></p>
+							<p className="text-2xl">Routes Completed: <span className={classes.value}>{user.totalRoutes || 0}</span></p>
 						</div>
 					</div>
 

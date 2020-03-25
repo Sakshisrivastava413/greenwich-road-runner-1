@@ -143,10 +143,10 @@ const Leaderboard = () => {
 							<TableHead>
 								<TableRow>
 									<TableCell align="center">
-										<span className="font-semibold text-lg">Miles</span>
+										<span className="font-semibold text-lg">Name</span>
 									</TableCell>
 									<TableCell align="center">
-										<span className="font-semibold text-lg">Miles</span>
+										<span className="font-semibold text-lg">Routes Completed</span>
 									</TableCell>
 								</TableRow>
 							</TableHead>
