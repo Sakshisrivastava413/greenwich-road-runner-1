@@ -42,8 +42,11 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
+const isMobile = () => ((window.innerWidth <= 600) && (window.innerHeight <= 800));
+
 const Leaderboard = () => {
 	const classes = useStyles();
+	const [tab, setTab] = useState(isMobile() ? 'mile' : 'both');
 	const [mileLearderboard, setMileLeaderboard] = useState([]);
 	const [routeLearderboard, setRouteLeaderboard] = useState([]);
 
@@ -56,13 +59,13 @@ const Leaderboard = () => {
 			const mileLearderboard = res.docs.map(doc => doc.data());
 			const sorted = mileLearderboard.sort((e1, e2) => e1.miles > e2.miles ? -1 : 1);
 			setMileLeaderboardLoading(false);
-			setMileLeaderboard(sorted);
+			setMileLeaderboard([...sorted,...sorted,...sorted,...sorted]);
 		});
 		firebase.firestore().collection('route-leaderboard').get().then(res => {
 			const routeLearderboard = res.docs.map(doc => doc.data());
 			const sorted = routeLearderboard.sort((e1, e2) => e1.routes > e2.routes ? -1 : 1);
 			setRouteLeaderboardLoading(false);
-			setRouteLeaderboard(sorted);
+			setRouteLeaderboard([...sorted,...sorted,...sorted,...sorted]);
 		});
 	}, []);
 
@@ -75,8 +78,24 @@ const Leaderboard = () => {
 	return (
 		<div>
 			{false && <div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>}
-			<div className="w-full flex justify-around">
-				{!mileLeaderboardLoading ? (
+			<div className="w-full flex justify-around sm:flex-col">
+				{isMobile() && (
+					<div className="flex justify-around items-center w-full my-2 px-3">
+						<button
+							className={`${tab === 'mile' ? 'bg-indigo-400 text-white' : 'bg-white text-black'} focus:outline-none px-4 py-2 w-1/2 font-semibold rounded`}
+							onClick={() => setTab('mile')}
+						>
+							MILE
+						</button>
+						<button
+							className={`${tab === 'route' ? 'bg-indigo-400 text-white' : 'bg-white text-black'} focus:outline-none px-4 py-2 w-1/2 font-semibold rounded`}
+							onClick={() => setTab('route')}
+						>
+							ROUTE
+						</button>
+					</div>
+				)}
+				{!mileLeaderboardLoading && (tab === 'mile' || tab === 'both') ? (
 					<TableContainer component={Paper} className={classes.tableContainer}>
 						<Table stickyHeader className={classes.table} aria-label="miles table">
 							<TableHead>
@@ -90,8 +109,8 @@ const Leaderboard = () => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{mileLearderboard.map(row => (
-									<TableRow key={row.name}>
+								{mileLearderboard.map((row, i) => (
+									<TableRow key={i}>
 										<TableCell align="center">
 											<span className="">{row.name}</span>
 										</TableCell>
@@ -107,9 +126,9 @@ const Leaderboard = () => {
 						)}
 					</TableContainer>
 				) : (
-					<TableLoading />
+					mileLeaderboardLoading && <TableLoading />
 				)}
-				{!routeLeaderboardLoading ? (
+				{!routeLeaderboardLoading && (tab === 'route' || tab === 'both') ? (
 					<TableContainer component={Paper} className={classes.tableContainer}>
 						<Table stickyHeader className={classes.table} aria-label="routes table">
 							<TableHead>
@@ -123,8 +142,8 @@ const Leaderboard = () => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{routeLearderboard.map(row => (
-									<TableRow key={row.name}>
+								{routeLearderboard.map((row, i) => (
+									<TableRow key={i}>
 										<TableCell align="center">
 											<span className="">{row.name}</span>
 										</TableCell>
@@ -140,7 +159,7 @@ const Leaderboard = () => {
 						)}
 					</TableContainer>
 				) : (
-					<TableLoading />
+					routeLeaderboardLoading && <TableLoading />
 				)}
 			</div>
 		</div>

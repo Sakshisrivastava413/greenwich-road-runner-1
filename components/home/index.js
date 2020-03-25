@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		marginTop: '1rem',
 		minWidth: 275,
-		height: '90vh',
+		height: 'auto',
 	},
 	bullet: {
 		display: 'inline-block',
@@ -67,12 +67,12 @@ const Home = () => {
 				<CardContent>
 					<div className="flex justify-between">
 						<div className="flex flex-col items-center justify-center mx-6">
-							<Avatar size="2xl" src={user.photoUrl} name={user.firstName + user.lastName} />
-							<p className="text-2xl font-semibold my-4">{`${user.firstName} ${user.lastName}`}</p>
+							<Avatar size="xl" showBorder src={user.photoUrl} name={user.firstName + user.lastName} />
+							<p className="text-2xl sm:font-semibold sm:text-lg font-semibold my-4 text-center">{`${user.firstName} ${user.lastName}`}</p>
 						</div>
-						<div className="flex flex-col self-end p-6">
-							<p className="text-2xl">YTD Total: <span className={classes.value}>{user.totalMiles || 0} miles</span></p>
-							<p className="text-2xl">Routes Completed: <span className={classes.value}>{user.totalRoutes || 0}</span></p>
+						<div className="flex flex-col self-end p-6 sm:p-1">
+							<p className="text-2xl sm:text-sm">YTD Total: <span className={classes.value}>{user.totalMiles || 0} miles</span></p>
+							<p className="text-2xl sm:text-sm">Routes Completed: <span className={classes.value}>{user.totalRoutes || 0}</span></p>
 						</div>
 					</div>
 
