@@ -59,13 +59,13 @@ const Leaderboard = () => {
 			const mileLearderboard = res.docs.map(doc => doc.data());
 			const sorted = mileLearderboard.sort((e1, e2) => e1.miles > e2.miles ? -1 : 1);
 			setMileLeaderboardLoading(false);
-			setMileLeaderboard([...sorted,...sorted,...sorted,...sorted]);
+			setMileLeaderboard(sorted);
 		});
 		firebase.firestore().collection('route-leaderboard').get().then(res => {
 			const routeLearderboard = res.docs.map(doc => doc.data());
 			const sorted = routeLearderboard.sort((e1, e2) => e1.routes > e2.routes ? -1 : 1);
 			setRouteLeaderboardLoading(false);
-			setRouteLeaderboard([...sorted,...sorted,...sorted,...sorted]);
+			setRouteLeaderboard(sorted);
 		});
 	}, []);
 
