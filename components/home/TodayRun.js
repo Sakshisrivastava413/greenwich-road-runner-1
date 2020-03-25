@@ -72,9 +72,6 @@ const TodayRun = () => {
 							<TableHead>
 								<TableRow>
 									<TableCell align="center">
-										<span className="font-semibold text-lg">Time</span>
-									</TableCell>
-									<TableCell align="center">
 										<span className="font-semibold text-lg">Route</span>
 									</TableCell>
 									<TableCell align="center" className="font-semibold">
@@ -92,9 +89,6 @@ const TodayRun = () => {
 								{userEntries.map((row, i) => (
 									<TableRow key={i}>
 										<TableCell align="center">
-											<span className="">{format(new Date(row.createdAt), 'HH:mm:ss')}</span>
-										</TableCell>
-										<TableCell align="center">
 											<span className="">{row.route}</span>
 										</TableCell>
 										<TableCell align="center">
@@ -110,6 +104,9 @@ const TodayRun = () => {
 								))}
 							</TableBody>
 						</Table>
+						{!userEntries.length && (
+							<h1 className="flex font-bold justify-center items-center w-full p-4 text-2xl text-gray-600">No Data</h1>
+						)}
 					</TableContainer>
 				) : (
 					<TableLoading />
