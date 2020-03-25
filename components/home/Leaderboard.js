@@ -74,7 +74,7 @@ const Leaderboard = () => {
 
 	return (
 		<div>
-			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>
+			{false && <div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>}
 			<div className="w-full flex justify-around">
 				{!mileLeaderboardLoading ? (
 					<TableContainer component={Paper} className={classes.tableContainer}>

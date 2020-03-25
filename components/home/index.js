@@ -11,12 +11,14 @@ import { Avatar, Spinner } from '@chakra-ui/core';
 
 import { UserContext } from '../Page';
 import AddMiles from './AddMiles';
+import TodayRun from './TodayRun';
 import Leaderboard from './Leaderboard';
 
 const TabPanel = (props) => {
 	const { value } = props;
-	if (value === 1) return <Leaderboard />;
-	else return <AddMiles />;
+	if (value === 2) return <Leaderboard />;
+	else if (value === 1) return <TodayRun />
+	else if (value === 0) return <AddMiles />;
 };
 
 const useStyles = makeStyles(theme => ({
@@ -84,6 +86,7 @@ const Home = () => {
 						variant="fullWidth"
 					>
 						<Tab label="Add Miles" />
+						<Tab label="Today's Run" />
 						<Tab label="Leaderboard" />
 					</Tabs>
 				</AppBar>

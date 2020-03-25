@@ -57,6 +57,7 @@ const AddMiles = () => {
 			route,
 			mileage,
 			totalMin,
+			createdAt: Date.now(),
 		}).then(async () => {
 			await firestore.collection('mile-leaderboard').doc(user.uid).set({
 				miles: Number(user.totalMiles || 0) + Number(mileage),
