@@ -41,6 +41,13 @@ const AddMiles = () => {
 	const [loading, setLoading] = useState(false);
 
 	const submit = async () => {
+		if (!selectedRoute || !pace) return toast({
+			title: 'Warning',
+			description: 'Fill all fields to continue',
+			isClosable: true,
+			position: 'top-right',
+			status: 'warning',
+		});
 		const totalMin = getTotalMin(time);
 		const route = selectedRoute.value;
 		setLoading(true);
@@ -171,7 +178,6 @@ const AddMiles = () => {
 					variant="contained"
 					color="primary"
 					onClick={submit}
-					disabled={!pace || !selectedRoute}
 				>
 					Submit Miles
 					{loading && <Spinner ml="4" color="white" />}
