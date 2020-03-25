@@ -74,29 +74,6 @@ const Leaderboard = () => {
 
 	return (
 		<div>
-			{false && (
-				<div>
-					<div className={classes.title}>Today's Run</div>
-					<Grid container spacing={3}>
-						<Grid xs>
-							<div className={classes.paper}><b>Route</b></div>
-							<div className={classes.value}>xs</div>
-						</Grid>
-						<Grid xs>
-							<div className={classes.paper}><b>Miles</b></div>
-							<div className={classes.value}>xs</div>
-						</Grid>
-						<Grid xs>
-							<div className={classes.paper}><b>Time</b></div>
-							<div className={classes.value}>xs</div>
-						</Grid>
-						<Grid xs>
-							<div className={classes.paper}><b>Pace</b></div>
-							<div className={classes.value}>xs</div>
-						</Grid>
-					</Grid>
-				</div>
-			)}
 			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>
 			<div className="w-full flex justify-around">
 				{!mileLeaderboardLoading ? (
@@ -125,6 +102,9 @@ const Leaderboard = () => {
 								))}
 							</TableBody>
 						</Table>
+						{!mileLearderboard.length && (
+							<h1 className="flex font-bold justify-center items-center w-full p-4 text-2xl text-gray-600">No Data</h1>
+						)}
 					</TableContainer>
 				) : (
 					<TableLoading />
@@ -155,6 +135,9 @@ const Leaderboard = () => {
 								))}
 							</TableBody>
 						</Table>
+						{!routeLearderboard.length && (
+							<h1 className="flex font-bold justify-center items-center w-full p-4 text-2xl text-gray-600">No Data</h1>
+						)}
 					</TableContainer>
 				) : (
 					<TableLoading />
