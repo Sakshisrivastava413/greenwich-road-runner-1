@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    marginBottom: '2rem',
   },
   form: {
     width: '100%',
@@ -66,9 +67,11 @@ const Signup = () => {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        <Typography component="h4" variant="h4">
-          Sign up
-        </Typography>
+        <div className="mt-12">
+          <Typography component="h4" variant="h4">
+            Sign up
+          </Typography>
+        </div>
         <Fab color="primary" aria-label="add" className={classes.upload}>
           <AddAPhoto className={classes.camera} />
         </Fab>

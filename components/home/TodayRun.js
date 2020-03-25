@@ -95,7 +95,7 @@ const TodayRun = () => {
 											<span className="">{row.mileage}</span>
 										</TableCell>
 										<TableCell align="center">
-											<span className="">{row.totalMin} minutes</span>
+											<span className="">{Number(row.totalMin).toFixed(2)} minutes</span>
 										</TableCell>
 										<TableCell align="center">
 											<span className="">{(row.totalMin / row.mileage).toFixed(2)}</span>

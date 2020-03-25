@@ -36,14 +36,14 @@ const AddMiles = () => {
 	const [selectedRoute, setSelectedRoute] = useState();
 	const [mileage, setMileage] = useState('');
 	const [time, setTime] = useState('00:00:00');
-	const [pace, setPace] = useState('');
+	const [pace, setPace] = useState(0);
 	const [predefinedRoutes, setPredefinedRoutes] = useState([]);
 	const [loading, setLoading] = useState(false);
 
 	const submit = async () => {
 		if (!selectedRoute || !pace) return toast({
 			title: 'Warning',
-			description: 'Fill all fields to continue',
+			description: 'Fill all fields to continue (Make sure pace is non-zero)',
 			isClosable: true,
 			position: 'top-right',
 			status: 'warning',
@@ -106,6 +106,12 @@ const AddMiles = () => {
 			setPredefinedRoutes(routes.map(route => ({ label: route.name, value: route.name, ...route })));
 		});
 	}, []);
+
+	useEffect(() => {
+		if (predefinedRoutes.length) {
+			setSelectedRoute(predefinedRoutes[0]);
+		}
+	}, [predefinedRoutes]);
 
 	const handleRouteChange = (selectedRoute) => {
 		setSelectedRoute(selectedRoute);
