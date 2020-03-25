@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		marginTop: '1rem',
 		minWidth: 275,
-		height: '100%',
+		height: '90vh',
 	},
 	bullet: {
 		display: 'inline-block',

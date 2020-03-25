@@ -32,23 +32,15 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center',
 		color: theme.palette.primary.main,
 	},
+	tableContainer: {
+		maxHeight: 380,
+		width: '100%',
+	},
 	value: {
 		textAlign: 'center',
 		marginBottom: 30
 	},
 }));
-
-function createData(name, miles, routes, completed) {
-	return { name, miles, routes, completed };
-}
-
-const rows = [
-	createData('Frozen yoghurt', 159, 'yes', 4.0),
-	createData('Ice cream sandwich', 237, 'chef park', 4.3),
-	createData('Eclair', 262, 'uchi road', 24),
-	createData('Cupcake', 305, 'mount everest', 4.3),
-	createData('Gingerbread', 356, 'tikka lal road', 3.9),
-];
 
 const Leaderboard = () => {
 	const classes = useStyles();
@@ -106,10 +98,10 @@ const Leaderboard = () => {
 				</div>
 			)}
 			<div className="w-full text-center text-white bg-indigo-700 rounded text-3xl font-bold px-6 py-3">LEADERBOARD</div>
-			<div className="flex justify-around items-center">
+			<div className="w-full flex justify-around">
 				{!mileLeaderboardLoading ? (
-					<TableContainer component={Paper}>
-						<Table className={classes.table} aria-label="miles table">
+					<TableContainer component={Paper} className={classes.tableContainer}>
+						<Table stickyHeader className={classes.table} aria-label="miles table">
 							<TableHead>
 								<TableRow>
 									<TableCell align="center">
@@ -138,8 +130,8 @@ const Leaderboard = () => {
 					<TableLoading />
 				)}
 				{!routeLeaderboardLoading ? (
-					<TableContainer component={Paper}>
-						<Table className={classes.table} aria-label="routes table">
+					<TableContainer component={Paper} className={classes.tableContainer}>
+						<Table stickyHeader className={classes.table} aria-label="routes table">
 							<TableHead>
 								<TableRow>
 									<TableCell align="center">
