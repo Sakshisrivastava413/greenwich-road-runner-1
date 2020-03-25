@@ -11,6 +11,7 @@ import {
   CircularProgress
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useToast } from '@chakra-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = () => {
+  const toast = useToast();
   const classes = useStyles();
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -53,12 +55,25 @@ const Login = () => {
       return;
 		}
 
+    setLoading(true);
     try {
-      setLoading(true);
       await firebase.auth().signInWithEmailAndPassword(email, password);
+      toast({
+				title: 'Welcome',
+				description: 'Logged in successfully!.',
+				isClosable: true,
+				position: 'top-right',
+				status: 'success',
+			});
       router.push('/home');
     } catch (error) {
-      alert(error.message);
+      toast({
+				title: 'Error',
+				description: error.message,
+				isClosable: true,
+				position: 'top-right',
+				status: 'error',
+			});
     }
     setLoading(false);
   };
