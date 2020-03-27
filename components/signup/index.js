@@ -64,6 +64,14 @@ const Signup = () => {
     setLoading(false);
   }
 
+  const openDialog = () => {
+    var input = document.getElementById('imgupload');
+    input.click();
+    input.addEventListener('change', (e) => {
+      let file = e.target.files[0];
+    })
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -72,7 +80,8 @@ const Signup = () => {
             Sign up
           </Typography>
         </div>
-        <Fab color="primary" aria-label="add" className={classes.upload}>
+        <input type="file" id="imgupload" style={{display:'none' }} />
+        <Fab color="primary" aria-label="add" className={classes.upload} onClick={openDialog}>
           <AddAPhoto className={classes.camera} />
         </Fab>
         <form className={classes.form} noValidate>

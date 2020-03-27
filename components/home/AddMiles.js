@@ -134,7 +134,7 @@ const AddMiles = () => {
 			<div className={classes.container}>
 				<Grid container spacing={3} wrap>
 					<Grid item xs={12} sm={6}>
-						<p className="text-lg font-semibold mb-2">Route</p>
+						<p className="text-lg font-semibold mb-2">Select or Add Route</p>
 						<CreatableSelect
 							onChange={handleRouteChange}
 							value={selectedRoute}
